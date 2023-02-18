@@ -1,5 +1,5 @@
 ﻿using EntityStates;
-using JetBrains.Annotations;
+    using JetBrains.Annotations;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
@@ -105,6 +105,7 @@ namespace TemplarSkins
 
         public class MalignanceSkill : SkillDef
         {
+            public static bool vfxOn = false;
             public override BaseSkillInstanceData OnAssigned([NotNull] GenericSkill skillSlot)
             {
                 if (!isMalignanceOn)
@@ -113,6 +114,7 @@ namespace TemplarSkins
                     On.RoR2.UI.ExpBar.Update += MalignantOriginsUIUpdate;
                     Run.onRunAmbientLevelUp += MalignantOriginsEventUpdate;
                     On.RoR2.CharacterBody.RecalculateStats += MalignantOriginsDebugUpdate;
+                    On.RoR2.CharacterBody.OnLevelUp += MalignantOriginsVFXUpdate;
                     Run.onRunDestroyGlobal += Unhook;
                     isMalignanceOn = true;
                 }
@@ -125,6 +127,7 @@ namespace TemplarSkins
                 On.RoR2.UI.ExpBar.Update -= MalignantOriginsUIUpdate;
                 Run.onRunAmbientLevelUp -= MalignantOriginsEventUpdate;
                 On.RoR2.CharacterBody.RecalculateStats -= MalignantOriginsDebugUpdate;
+                On.RoR2.CharacterBody.OnLevelUp -= MalignantOriginsVFXUpdate;
                 Run.onRunDestroyGlobal -= Unhook;
                 isMalignanceOn = false;
             }
@@ -146,9 +149,13 @@ namespace TemplarSkins
                 foreach (var body in malignantCharacters) if (body?.isActiveAndEnabled ?? false) 
                 { 
                     body.RecalculateStats();
+                    vfxOn = true;
                     body.OnLevelUp();
+                    vfxOn = false;
                 } 
             }
+
+            public static void MalignantOriginsVFXUpdate(On.RoR2.CharacterBody.orig_OnLevelUp orig, CharacterBody self) { if (vfxOn || !malignantCharacters.Contains(self)) orig(self); }
 
             public static void MalignantOriginsDebugUpdate(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
             {
