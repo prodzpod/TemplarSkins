@@ -143,7 +143,12 @@ namespace TemplarSkins
                     args.levelFlatAdd += Run.instance.ambientLevelFloor - oldLevel;
                 }
             }
-            public static void MalignantOriginsUIUpdate(On.RoR2.UI.ExpBar.orig_Update orig, ExpBar self) { orig(self); self.fillRectTransform.anchorMax = new Vector2(Run.instance.ambientLevel - Run.instance.ambientLevelFloor, 1f); }
+            public static void MalignantOriginsUIUpdate(On.RoR2.UI.ExpBar.orig_Update orig, ExpBar self) 
+            { 
+                orig(self);
+                CharacterBody body = LocalUserManager.GetFirstLocalUser()?.cachedBody;
+                if (body?.skillLocator != null && Array.Exists(body.skillLocator.allSkills, x => x.skillDef == malignance) && body?.inventory != null) self.fillRectTransform.anchorMax = new Vector2(Run.instance.ambientLevel - Run.instance.ambientLevelFloor, 1f); 
+            }
             public static void MalignantOriginsEventUpdate(Run self) 
             { 
                 foreach (var body in malignantCharacters) if (body?.isActiveAndEnabled ?? false) 

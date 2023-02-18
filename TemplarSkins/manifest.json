@@ -1,6 +1,6 @@
 {
     "name": "TemplarSkins",
-    "version_number": "1.1.1",
+    "version_number": "1.1.2",
     "website_url": "https://github.com/prodzpod/TemplarSkins",
     "description": "Adds skins, a passive, and logbook fix for the Most Playable Templar.",
     "dependencies": [

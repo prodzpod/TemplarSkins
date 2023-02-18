@@ -17,7 +17,7 @@ namespace TemplarSkins
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "prodzpod";
         public const string PluginName = "TemplarSkins";
-        public const string PluginVersion = "1.1.1";
+        public const string PluginVersion = "1.1.2";
         public static ManualLogSource Log;
         internal static PluginInfo pluginInfo;
         private static AssetBundle _assetBundle;
