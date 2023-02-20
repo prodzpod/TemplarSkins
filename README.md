@@ -5,7 +5,8 @@
 - Adds better subtitle and logbook entry.
 - Adds a new passive, *Malignant Origins* (configurable)
 ## Changelog
+- 1.2.0: Unlocks, fixed skins not reflecting head, nerfed Malignant Origins, fixed portal Nullref
 - 1.1.2: Fixed radiant origins xp bar visual glitch
 - 1.1.1: Fixed level up visual glitch
 - 1.1.0: Added everything but the skins
-- 1.0.0: Initial Release on 
+- 1.0.0: Initial Release

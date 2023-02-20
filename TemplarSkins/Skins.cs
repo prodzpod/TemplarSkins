@@ -1,4 +1,5 @@
-﻿using R2API;
+﻿using HarmonyLib;
+using R2API;
 using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace TemplarSkins
         {
             bodyPrefab = Templar.Templar.TemplarPrefab;
             gameObject = bodyPrefab.GetComponent<ModelLocator>().modelTransform.gameObject;
+            gameObject.transform.Find("ClayBruiserArmature").Find("ROOT").Find("base").Find("stomach").Find("chest").Find("neck").Find("head").Find("VagabondHead").gameObject.SetActive(false);
             ModelSkinController modelSkinController = gameObject.GetComponent<ModelSkinController>();
             defaultSkin = modelSkinController.skins[0];
             List<SkinDef> templarSkins = new();
