@@ -43,7 +43,7 @@ namespace TemplarSkins
             AddUnlockableSkill("TEMPLAR_UTILITY_DODGE_NAME");
             AddUnlockableSkill("TEMPLAR_SPECIAL_SWAP_NAME");
             AddUnlockableSkin("skinTemplarAlt", "Templar.Alt1");
-            if (Main.Mods("com.themysticsword.bulwarkshaunt")) AddUnlockableSkin("skinTemplarBulwarksHauntAlt", "Skins.Templar.BulwarksHaunt_Alt");
+            if (Main.Mods("com.themysticsword.bulwarkshaunt")) AddUnlockableSkin("skinTemplarBulwarksHauntAlt", "Templar.BulwarksHaunt_Alt");
             AddUnlockableSkin("skinTemplarGoldAlt", "Templar.Enemy");
             if (Main.Mods("prodzpod.Downpour"))
             {
