@@ -133,7 +133,7 @@ namespace TemplarSkins
                     .FilterCandidatesByHurtBoxTeam(TeamMask.GetEnemyTeams(localUser.cachedBody.teamComponent.teamIndex)).OrderCandidatesByDistance().FilterCandidatesByDistinctHurtBoxEntities().GetHurtBoxes())
                 {
                     CharacterBody body = hurtBox.healthComponent.body;
-                    body.RecalculateStats();
+                    body.MarkAllStatsDirty();
                     if (body.HasBuff(RoR2Content.Buffs.ClayGoo)) ++num;
                 }
                 if (num >= 20) Grant();
