@@ -22,6 +22,7 @@ namespace TemplarSkins
         public static bool isMalignanceOn = false;
         public static List<CharacterBody> malignantCharacters = new();
         public const float Multiplier = 2.5f;
+        public static int level;
         public static void Patch()
         {
             // radiant
@@ -111,9 +112,10 @@ namespace TemplarSkins
             {
                 if (!isMalignanceOn)
                 {
+                    level = 1;
                     RecalculateStatsAPI.GetStatCoefficients += MalignantOriginsAPIUpdate;
                     On.RoR2.UI.ExpBar.Update += MalignantOriginsUIUpdate;
-                    Run.onRunAmbientLevelUp += MalignantOriginsEventUpdate;
+                    On.RoR2.Run.RecalculateDifficultyCoefficentInternal += MalignantOriginsEventUpdate;
                     On.RoR2.CharacterBody.RecalculateStats += MalignantOriginsDebugUpdate;
                     On.RoR2.CharacterBody.OnLevelUp += MalignantOriginsVFXUpdate;
                     Run.onRunDestroyGlobal += Unhook;
@@ -126,7 +128,7 @@ namespace TemplarSkins
             {
                 RecalculateStatsAPI.GetStatCoefficients -= MalignantOriginsAPIUpdate;
                 On.RoR2.UI.ExpBar.Update -= MalignantOriginsUIUpdate;
-                Run.onRunAmbientLevelUp -= MalignantOriginsEventUpdate;
+                On.RoR2.Run.RecalculateDifficultyCoefficentInternal -= MalignantOriginsEventUpdate;
                 On.RoR2.CharacterBody.RecalculateStats -= MalignantOriginsDebugUpdate;
                 On.RoR2.CharacterBody.OnLevelUp -= MalignantOriginsVFXUpdate;
                 Run.onRunDestroyGlobal -= Unhook;
@@ -141,23 +143,30 @@ namespace TemplarSkins
                     float oldLevel = TeamManager.instance.GetTeamLevel(body.teamComponent.teamIndex);
                     if (body.inventory.GetItemCount(RoR2Content.Items.UseAmbientLevel) > 0) oldLevel = Math.Max(oldLevel, Run.instance.ambientLevelFloor);
                     oldLevel += body.inventory.GetItemCount(RoR2Content.Items.LevelBonus);
-                    args.levelFlatAdd += ((Run.instance.ambientLevelFloor + (Multiplier - 1)) / Multiplier) - oldLevel;
+                    args.levelFlatAdd += level - oldLevel;
                 }
             }
             public static void MalignantOriginsUIUpdate(On.RoR2.UI.ExpBar.orig_Update orig, ExpBar self) 
             { 
                 orig(self);
                 CharacterBody body = LocalUserManager.GetFirstLocalUser()?.cachedBody;
-                if (body?.skillLocator != null && Array.Exists(body.skillLocator.allSkills, x => x.skillDef == malignance) && body?.inventory != null) self.fillRectTransform.anchorMax = new Vector2((Run.instance.ambientLevel + (Multiplier - 1)) % Multiplier / Multiplier, 1f); 
+                if (body?.skillLocator != null && Array.Exists(body.skillLocator.allSkills, x => x.skillDef == malignance) && body?.inventory != null) 
+                    self.fillRectTransform.anchorMax = new Vector2((Run.instance.ambientLevel - 1) % Multiplier / Multiplier, 1f); 
             }
-            public static void MalignantOriginsEventUpdate(Run self) 
-            { 
-                foreach (var body in malignantCharacters) if (body != null && body.isActiveAndEnabled && self.ambientLevelFloor % Multiplier == 1) 
-                { 
-                    body.MarkAllStatsDirty();
-                    vfxOn = true;
-                    body.OnLevelUp();
-                    vfxOn = false;
+            public static void MalignantOriginsEventUpdate(On.RoR2.Run.orig_RecalculateDifficultyCoefficentInternal orig, Run self) 
+            {
+                orig(self);
+                foreach (var body in malignantCharacters) if (body != null && body.isActiveAndEnabled) 
+                {
+                    int newLevel = Mathf.FloorToInt((self.ambientLevel - 1) / Multiplier) + 1;
+                    if (newLevel != level) body.MarkAllStatsDirty();
+                    if (newLevel > level)
+                    {
+                        vfxOn = true;
+                        body.OnLevelUp();
+                        vfxOn = false;
+                    }
+                    if (newLevel != level) level = newLevel;
                 } 
             }
 
@@ -166,7 +175,7 @@ namespace TemplarSkins
             public static void MalignantOriginsDebugUpdate(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
             {
                 orig(self);
-                if (self != null && malignantCharacters.Contains(self)) self.level = (Run.instance.ambientLevelFloor + (Multiplier - 1)) / Multiplier;
+                if (self != null && malignantCharacters.Contains(self)) self.level = level;
             }
         }
     }
