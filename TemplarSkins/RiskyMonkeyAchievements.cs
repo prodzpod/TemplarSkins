@@ -26,12 +26,13 @@ namespace TemplarSkins
             public static void ILManipulator(ILContext il) 
             {
                 ILCursor c = new(il);
-                c.Index = 0;
                 c.EmitDelegate(() => { Main.Log.LogDebug("Hook Planted"); });
-                c.GotoNext(x => x.MatchCastclass<RegisterAchievementAttribute>(), x => x.MatchStloc(11));
-                c.Index += 2;
-                c.Emit(OpCodes.Ldloc, 10);
-                c.Emit(OpCodes.Ldloc, 11);
+                int registerAchievementAttribute = -1, type = -1;
+                c.GotoNext(x => x.MatchCastclass<RegisterAchievementAttribute>(), x => x.MatchStloc(out registerAchievementAttribute));
+                c.GotoPrev(x => x.MatchLdloc(out type));
+                c.GotoNext(MoveType.After, x => x.MatchStloc(registerAchievementAttribute));
+                c.Emit(OpCodes.Ldloc, type);
+                c.Emit(OpCodes.Ldloc, registerAchievementAttribute);
                 c.EmitDelegate<Func<Type, RegisterAchievementAttribute, RegisterAchievementAttribute>>((type, achievementAttribute) =>
                 {
                     if (achievementAttribute != null) return achievementAttribute;    
@@ -41,7 +42,7 @@ namespace TemplarSkins
                     if (m != null && !(bool)m.Invoke(null, null)) return null;
                     return new RegisterAchievementAttribute(moddedAttribute.identifier, moddedAttribute.unlockableRewardIdentifier, moddedAttribute.prerequisiteAchievementIdentifier, moddedAttribute.serverTrackerType);
                 });
-                c.Emit(OpCodes.Stloc, 11);
+                c.Emit(OpCodes.Stloc, registerAchievementAttribute);
             }
         }
     }

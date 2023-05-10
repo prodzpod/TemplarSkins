@@ -5,6 +5,7 @@
 - Adds better subtitle and logbook entry.
 - Adds a new passive, *Malignant Origins* (configurable)
 ## Changelog
+- 1.2.4: Futureproofed janky bepinexpack hook (it crashed with newer versions)
 - 1.2.3: Inconsistent stat changes fix
 - 1.2.2: Buffed malignant origins
 - 1.2.1: Fixed spiritual success compat

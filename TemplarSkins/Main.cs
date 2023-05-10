@@ -23,7 +23,7 @@ namespace TemplarSkins
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "prodzpod";
         public const string PluginName = "TemplarSkins";
-        public const string PluginVersion = "1.2.3";
+        public const string PluginVersion = "1.2.4";
         public static ManualLogSource Log;
         public static Harmony Harmony;
         internal static PluginInfo pluginInfo;
